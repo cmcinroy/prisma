@@ -140,6 +140,15 @@ lazy val deployConnectorPostgres = connectorProject("deploy-connector-postgresql
 lazy val deployConnectorPostgresPassive = connectorProject("deploy-connector-postgresql-passive")
   .dependsOn(deployConnectorPostgres)
 
+lazy val deployConnectorOracle = connectorProject("deploy-connector-oracle")
+  .dependsOn(deployConnector)
+  .settings(
+    libraryDependencies ++= slick ++ Seq(oracleClient)
+  )
+
+lazy val deployConnectorOraclePassive = connectorProject("deploy-connector-oracle-passive")
+  .dependsOn(deployConnectorOracle)
+
 lazy val apiConnector = connectorProject("api-connector")
   .dependsOn(sharedModels)
   .dependsOn(gcValues)
@@ -165,6 +174,17 @@ lazy val apiConnectorPostgres = connectorProject("api-connector-postgresql")
 
 lazy val apiConnectorPostgresPassive = connectorProject("api-connector-postgresql-passive")
   .dependsOn(apiConnectorPostgres)
+
+lazy val apiConnectorOracle = connectorProject("api-connector-oracle")
+  .dependsOn(apiConnector)
+  .dependsOn(metrics)
+  .dependsOn(slickUtils)
+  .settings(
+    libraryDependencies ++= slick ++ Seq(oracleClient)
+  )
+
+lazy val apiConnectorOraclePassive = connectorProject("api-connector-oracle-passive")
+  .dependsOn(apiConnectorOracle)
 
 // ####################
 //       SHARED
@@ -320,7 +340,9 @@ lazy val deployConnectorProjects = List(
   deployConnector,
   deployConnectorMySql,
   deployConnectorPostgres,
-  deployConnectorPostgresPassive
+  deployConnectorPostgresPassive,
+  deployConnectorOracle,
+  deployConnectorOraclePassive
 )
 
 lazy val apiConnectorProjects = List(
@@ -328,6 +350,8 @@ lazy val apiConnectorProjects = List(
   apiConnectorMySql,
   apiConnectorPostgres,
   apiConnectorPostgresPassive,
+  apiConnectorOracle,
+  apiConnectorOraclePassive
 )
 
 lazy val allConnectorProjects = deployConnectorProjects ++ apiConnectorProjects ++ Seq(connectorUtils)
